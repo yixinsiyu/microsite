@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeemicro.weixin.modules.cms.dao.CmsHuiyuanDao">
+    
+	<sql id="cmsHuiyuanColumns">
+		a.id AS "id",
+		a.mobile AS "mobile",
+		a.openid AS "openid",
+		a.username AS "username",
+		a.password AS "password",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.cardnum AS "cardnum",
+		a.dengji AS "dengji",
+		a.gzdw AS "gzdw",
+		a.tjr AS "tjr",
+		a.sex AS "sex",
+		a.shengri AS "shengri",
+		a.sycp AS "sycp"
+	</sql>
+	
+	<sql id="cmsHuiyuanJoins">
+	</sql>
+    
+	<select id="get" resultType="CmsHuiyuan">
+		SELECT 
+			<include refid="cmsHuiyuanColumns"/>
+		FROM cms_huiyuan a
+		<include refid="cmsHuiyuanJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByMobile" resultType="CmsHuiyuan">
+		SELECT 
+			<include refid="cmsHuiyuanColumns"/>
+		FROM cms_huiyuan a
+		<include refid="cmsHuiyuanJoins"/>
+		WHERE a.mobile = #{mobile}
+	</select>
+	<select id="getByCertNum" resultType="CmsHuiyuan">
+		SELECT 
+			<include refid="cmsHuiyuanColumns"/>
+		FROM cms_huiyuan a
+		WHERE a.cardnum = #{cardnum}
+	</select>
+	
+	
+	<select id="findList" resultType="CmsHuiyuan">
+		SELECT 
+			<include refid="cmsHuiyuanColumns"/>
+		FROM cms_huiyuan a
+		<include refid="cmsHuiyuanJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+			<if test="username != null and username != ''">
+				AND a.username = #{username}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListByOpenid" resultType="CmsHuiyuan">
+		SELECT 
+			<include refid="cmsHuiyuanColumns"/>
+		FROM cms_huiyuan a
+		<include refid="cmsHuiyuanJoins"/>
+		<where>
+			a.del_flag = '0'
+			<if test="_parameter != null and _parameter != ''">
+				AND a.openid = #{_parameter}
+			</if>
+			<if test="_parameter == null and _parameter == ''">
+				AND a.openid = '1234567890qwertyuio'
+			</if>
+		</where>
+		LIMIT 1
+	</select>
+	
+	<select id="findAllList" resultType="CmsHuiyuan">
+		SELECT 
+			<include refid="cmsHuiyuanColumns"/>
+		FROM cms_huiyuan a
+		<include refid="cmsHuiyuanJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cms_huiyuan(
+			id,
+			mobile,
+			username,
+			openid,
+			password,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			cardnum,
+			dengji,
+			gzdw,
+			tjr,
+			sex,
+			shengri,
+			sycp
+		) VALUES (
+			#{id},
+			#{mobile},
+			#{username},
+			#{openid},
+			#{password},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{cardnum},
+			#{dengji},
+			#{gzdw},
+			#{tjr},
+			#{sex},
+			#{shengri},
+			#{sycp}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_huiyuan SET 	
+			mobile = #{mobile},
+			username = #{username},
+		    openid = #{openid},
+			password = #{password},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			cardnum = #{cardnum},
+			dengji = #{dengji},
+			gzdw = #{gzdw},
+			tjr = #{tjr},
+			sex = #{sex},
+			shengri = #{shengri},
+			sycp = #{sycp}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="lhyjh">
+		UPDATE cms_huiyuan SET 	
+		    openid = #{openid}
+		WHERE mobile = #{mobile}
+	</update>
+	
+	<update id="delete">
+		UPDATE cms_huiyuan SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

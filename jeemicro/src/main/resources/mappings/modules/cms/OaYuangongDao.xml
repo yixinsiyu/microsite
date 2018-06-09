@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeemicro.weixin.modules.cms.dao.OaYuangongDao">
+    
+	<sql id="oaYuangongColumns">
+		a.id AS "id",
+		a.phone AS "phone",
+		a.username AS "username",
+		a.picture AS "picture",
+		a.zhiwu AS "zhiwu",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="oaYuangongJoins">
+	</sql>
+    
+	<select id="get" resultType="OaYuangong">
+		SELECT 
+			<include refid="oaYuangongColumns"/>
+		FROM oa_yuangong a
+		<include refid="oaYuangongJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaYuangong">
+		SELECT 
+			<include refid="oaYuangongColumns"/>
+		FROM oa_yuangong a
+		<include refid="oaYuangongJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="phone != null and phone != ''">
+				AND a.phone LIKE 
+					<if test="dbName == 'oracle'">'%'||#{phone}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{phone}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{phone},'%')</if>
+			</if>
+			<if test="username != null and username != ''">
+				AND a.username LIKE 
+					<if test="dbName == 'oracle'">'%'||#{username}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{username}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{username},'%')</if>
+			</if>
+			<if test="zhiwu != null and zhiwu != ''">
+				AND a.zhiwu LIKE 
+					<if test="dbName == 'oracle'">'%'||#{zhiwu}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{zhiwu}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{zhiwu},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListForFront" resultType="OaYuangong">
+		SELECT 
+			<include refid="oaYuangongColumns"/>
+		FROM oa_yuangong a
+		<include refid="oaYuangongJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="phone != null and phone != ''">
+				AND a.phone LIKE 
+					<if test="dbName == 'oracle'">'%'||#{phone}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{phone}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{phone},'%')</if>
+			</if>
+			<if test="username != null and username != ''">
+				AND a.username LIKE 
+					<if test="dbName == 'oracle'">'%'||#{username}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{username}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{username},'%')</if>
+			</if>
+			<if test="zhiwu != null and zhiwu != ''">
+				AND a.zhiwu LIKE 
+					<if test="dbName == 'oracle'">'%'||#{zhiwu}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{zhiwu}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{zhiwu},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaYuangong">
+		SELECT 
+			<include refid="oaYuangongColumns"/>
+		FROM oa_yuangong a
+		<include refid="oaYuangongJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_yuangong(
+			id,
+			phone,
+			username,
+			picture,
+			zhiwu,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{phone},
+			#{username},
+			#{picture},
+			#{zhiwu},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_yuangong SET 	
+			phone = #{phone},
+			username = #{username},
+			picture = #{picture},
+			zhiwu = #{zhiwu},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE oa_yuangong SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

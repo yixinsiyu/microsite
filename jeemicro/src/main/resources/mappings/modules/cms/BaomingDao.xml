@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeemicro.weixin.modules.cms.dao.BaomingDao">
+    
+	<sql id="cmsBaomingColumns">
+		a.id AS "id",
+		a.huodong AS "huodong",
+		a.content AS "content",
+		a.name AS "name",
+		a.phone AS "phone",
+		a.workunit AS "workunit",
+		a.ip AS "ip",
+		a.create_date AS "createDate",
+		a.re_user_id AS "reUser.id",
+		a.re_date AS "reDate",
+		a.re_content AS "reContent",
+		a.del_flag AS "delFlag",
+		u.name AS "reUser.name"		
+	</sql>
+	
+	<sql id="cmsBaomingJoins">
+		LEFT JOIN sys_user u ON u.id = a.re_user_id
+	</sql>
+    
+	<select id="get" resultType="Baoming">
+		SELECT 
+			<include refid="cmsBaomingColumns"/>
+		FROM cms_baoming a
+		<include refid="cmsBaomingJoins"/>
+		WHERE a.phone = #{phone}
+	</select>
+	
+	<select id="findList" resultType="Baoming">
+		SELECT 
+			<include refid="cmsBaomingColumns"/>
+		FROM cms_baoming a
+		<include refid="cmsBaomingJoins"/>
+		<where>
+			a.del_flag = #{delFlag}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Baoming">
+		SELECT 
+			<include refid="cmsBaomingColumns"/>
+		FROM cms_baoming a
+		<include refid="cmsBaomingJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cms_baoming(
+			id,
+			huodong,
+			content,
+			name,
+			phone,
+			workunit,
+			ip,
+			create_date,
+			re_user_id,
+			re_date,
+			re_content,
+			del_flag
+		) VALUES (
+			#{id},
+			#{huodong},
+			#{content},
+			#{name},
+			#{phone},
+			#{workunit},
+			#{ip},
+			#{createDate},
+			#{reUser.id},
+			#{reDate},
+			#{reContent},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_baoming SET 	
+			huodong = #{huodong},
+			content = #{content},
+			name = #{name},
+			phone = #{phone},
+			workunit = #{workunit},
+			ip = #{ip},
+			create_date = #{createDate},
+			re_user_id = #{reUser.id},
+			re_date = #{reDate},
+			re_content = #{reContent},
+			del_flag = #{delFlag}
+		WHERE phone = #{phone}
+	</update>
+	
+	<update id="delete">
+		UPDATE cms_baoming SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findByIdIn" resultType="Baoming">
+		SELECT 
+			<include refid="cmsBaomingColumns"/>
+		from cms_baoming a where 
+		<where>
+			id in ();
+		</where>		
+	</select>
+	<select id="getMaxOrderByDate" resultType="java.lang.Integer">
+	  select max(CAST(huodong AS SIGNED)) 
+	        from cms_baoming 
+	        where DATE_FORMAT(create_date,'%Y-%m-%d')=#{0}
+	  and cms_baoming.workunit=#{1}
+	</select>
+	
+	
+</mapper>

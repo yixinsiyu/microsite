@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeemicro.weixin.modules.cms.dao.CmsOrderDao">
+    
+	<sql id="cmsOrderColumns">
+		DATE_FORMAT(a.order_time,'%Y-%m-%d') AS "orderTime",
+		a.order_mp AS "orderMp",
+		a.order_ap AS "orderAp",
+		a.order_total AS "orderTotal",
+		a.order_version AS "orderVersion",
+		a.order_mp_total AS "orderMpTotal"
+	</sql>
+	
+	<sql id="cmsOrderJoins">
+	</sql>
+    
+	<select id="get" resultType="CmsOrder">
+		SELECT 
+			<include refid="cmsOrderColumns"/>
+		FROM cms_order a
+		<include refid="cmsOrderJoins"/>
+		WHERE a.order_time = #{orderTime}
+	</select>
+	
+	<select id="findList" resultType="CmsOrder">
+		SELECT 
+			<include refid="cmsOrderColumns"/>
+		FROM cms_order a
+		<include refid="cmsOrderJoins"/>
+		<where>
+			
+			<if test="orderTime != null and orderTime != ''">
+				AND a.order_time = #{orderTime}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CmsOrder">
+		SELECT 
+			<include refid="cmsOrderColumns"/>
+		FROM cms_order a
+		<include refid="cmsOrderJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cms_order(
+			order_time,
+			order_mp,
+			order_ap,
+			order_total,
+			order_version,
+			order_mp_total
+		) VALUES (
+			#{orderTime},
+			#{orderMp},
+			#{orderAp},
+			#{orderTotal},
+			#{orderVersion},
+			#{orderMpTotal}
+		)
+	</insert>
+	
+	<update id="update">
+			UPDATE cms_order SET 	
+			
+			order_mp = #{orderMp},
+			order_ap = #{orderAp},
+			order_total =#{orderTotal},
+			order_version =#{orderVersion}+1
+		WHERE order_time = #{orderTime}
+		      and order_version =#{orderVersion}
+		      
+	</update>
+	
+	<update id="updateByVersion">
+	
+		      UPDATE cms_order SET 	
+			
+			order_mp = #{orderMp},
+			order_ap = #{orderAp},
+			order_total =#{orderTotal}
+		WHERE order_time = #{orderTime}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM cms_order
+		WHERE order_total = #{orderTotal}
+	</update>
+	
+</mapper>

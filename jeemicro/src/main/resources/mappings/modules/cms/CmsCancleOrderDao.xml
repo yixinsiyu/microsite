@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeemicro.weixin.modules.cms.dao.CmsCancleOrderDao">
+    
+	<sql id="cmsCancleOrderColumns">
+		a.order_time AS "orderTime",
+		a.order_mp AS "orderMp",
+		a.order_ap AS "orderAp",
+		a.order_total AS "orderTotal",
+		a.order_version AS "orderVersion"
+	</sql>
+	
+	<sql id="cmsCancleOrderJoins">
+	</sql>
+    
+	<select id="get" resultType="CmsCancleOrder">
+		SELECT 
+			<include refid="cmsCancleOrderColumns"/>
+		FROM cms_cancle_order a
+		<include refid="cmsCancleOrderJoins"/>
+		WHERE a.order_time = #{orderTime}
+	</select>
+	
+	<select id="findList" resultType="CmsCancleOrder">
+		SELECT 
+			<include refid="cmsCancleOrderColumns"/>
+		FROM cms_cancle_order a
+		<include refid="cmsCancleOrderJoins"/>
+		<where>
+			
+			<if test="orderTime != null and orderTime != ''">
+				AND a.order_time = #{orderTime}
+			</if>
+			<if test="orderMp != null and orderMp != ''">
+				AND a.order_mp = #{orderMp}
+			</if>
+			<if test="orderAp != null and orderAp != ''">
+				AND a.order_ap = #{orderAp}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CmsCancleOrder">
+		SELECT 
+			<include refid="cmsCancleOrderColumns"/>
+		FROM cms_cancle_order a
+		<include refid="cmsCancleOrderJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cms_cancle_order(
+			order_time,
+			order_mp,
+			order_ap,
+			order_total,
+			order_version
+		) VALUES (
+			#{orderTime},
+			#{orderMp},
+			#{orderAp},
+			#{orderTotal},
+			#{orderVersion}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_cancle_order SET 	
+			order_time = #{orderTime},
+			order_mp = #{orderMp},
+			order_ap = #{orderAp},
+			order_total = #{orderTotal},
+			order_version = #{orderVersion}
+		WHERE order_time = #{orderTime}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM cms_cancle_order
+		WHERE order_time = #{orderTime}
+	</update>
+	
+</mapper>
